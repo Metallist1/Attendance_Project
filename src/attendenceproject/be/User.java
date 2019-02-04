@@ -15,6 +15,29 @@ public class User {
     private String url;
     private int ID;
     private int currentClass;
+    private int isTeacher;
+
+    public int getID() {
+        return ID;
+    }
+
+    public User(String name,  int ID, int isTeacher) {
+        this.name = name;
+        this.ID = ID;
+        this.isTeacher = isTeacher;
+    }
+
+    public User(String name, String url, int ID, int currentClass, int isTeacher) {
+        this.name = name;
+        this.url = url;
+        this.ID = ID;
+        this.currentClass = currentClass;
+        this.isTeacher = isTeacher;
+    }
+
+    public int isTeacher() {
+        return isTeacher;
+    }
 
     public String getName() {
         return name;

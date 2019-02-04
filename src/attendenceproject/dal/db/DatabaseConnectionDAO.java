@@ -60,11 +60,11 @@ public class DatabaseConnectionDAO {
 
     private void setConnection() {
         this.ds = new SQLServerDataSource();
-        ds.setDatabaseName(getInstance().getProperty("databaseName"));
-        ds.setUser(getInstance().getProperty("userName"));
-        ds.setPassword(getInstance().getProperty("password"));
-        ds.setServerName(getInstance().getProperty("ip"));
-        ds.setPortNumber(Integer.parseInt(getInstance().getProperty("port")));
+        ds.setDatabaseName(getProperty("databaseName"));
+        ds.setUser(getProperty("userName"));
+        ds.setPassword(getProperty("password"));
+        ds.setServerName(getProperty("ip"));
+        ds.setPortNumber(Integer.parseInt(getProperty("port")));
     }
     public SQLServerDataSource getConnection(){
         return ds;

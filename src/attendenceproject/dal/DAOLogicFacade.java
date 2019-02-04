@@ -17,4 +17,6 @@ public interface DAOLogicFacade {
 
     public List<User> getAllUsers() throws daoException;
 
+    public User checkLogin(String username, String password) throws daoException;
+
 }

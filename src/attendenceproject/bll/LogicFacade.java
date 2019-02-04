@@ -17,4 +17,6 @@ public interface LogicFacade {
 
     public List<User> getAllUsers() throws bllException;
 
+    public User checkLogin(String username, String password) throws bllException;
+
 }

@@ -19,7 +19,7 @@ public class AttendenceProject extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/MainWindowView.fxml"));
         
         Scene scene = new Scene(root);
         

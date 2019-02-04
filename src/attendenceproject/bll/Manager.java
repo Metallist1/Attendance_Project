@@ -20,6 +20,7 @@ import attendenceproject.dal.exceptions.daoException;
  * @author nedas
  */
 public class Manager implements LogicFacade {
+
     private final DAOLogicFacade logiclayer;
     private final searchUser searchforUser;
 
@@ -34,6 +35,15 @@ public class Manager implements LogicFacade {
     @Override
     public List<User> getAllUsers() throws bllException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public User checkLogin(String username, String password) throws bllException {
+        try {
+            return logiclayer.checkLogin(username, password);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
     }
 
 }

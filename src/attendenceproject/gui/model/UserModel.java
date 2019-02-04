@@ -53,4 +53,12 @@ public class UserModel {
             throw new modelException(ex.getMessage());
         }
     }
+
+    public User checkLogin(String username, String password) throws modelException {
+        try {
+            return logiclayer.checkLogin(username, password);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+    }
 }
