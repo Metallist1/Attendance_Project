@@ -193,9 +193,9 @@ public class UserDAO {
             ps.setString(2, url);
             ps.setFloat(3, CPR);
             ps.setInt(4, getNewestStudentID());
-            ps.addBatch();                   
-            ps.executeBatch();         
-            User usr = new User(name, url,getNewestStudentID(), 0,0);
+            ps.addBatch();
+            ps.executeBatch();
+            User usr = new User(name, url, getNewestStudentID(), 0, 0);
             return usr; //Returns the movie object
         } catch (SQLServerException ex) {
             throw new daoException("Cannot connect to server");
@@ -225,7 +225,7 @@ public class UserDAO {
     }
 
     public List<User> getAllStudentFromTeaccher(User teacher) throws daoException {
-                List<User> allCurrentUsers = new ArrayList<User>();
+        List<User> allCurrentUsers = new ArrayList<User>();
         try (Connection con = ds.getConnection()) {
             String query = "SELECT * FROM Is_Teaching WHERE teacherID = ? ";
 
@@ -239,6 +239,53 @@ public class UserDAO {
                 allCurrentUsers.addAll(getAllStudentFromClass(id));
             }
             return allCurrentUsers;
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot execute query");
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
+        }
+    }
+
+    public User editUser(User user, String nameToChange, String urlToChange, int CPRtoChange) throws daoException {
+        try (Connection con = ds.getConnection()) {
+            String query = "UPDATE Student set name = ?, CPR = ?, photo = ? WHERE studentID = ?";
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            preparedStmt.setString(1, nameToChange);
+            preparedStmt.setFloat(2, CPRtoChange);
+            preparedStmt.setString(3, urlToChange);
+            preparedStmt.setInt(4, user.getID());
+            preparedStmt.executeUpdate();
+            User us = new User(nameToChange, urlToChange, user.getID(), user.getCurrentClass(), 0); //creates a new song object.
+            return us;
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot execute query");
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
+        }
+    }
+
+    public void deleteUser(User user) throws daoException {
+        try (Connection con = ds.getConnection()) {
+            String query = "DELETE from Attendance WHERE studentID = ?";
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            preparedStmt.setInt(1, user.getID());
+            preparedStmt.execute();
+            query = "DELETE from Is_Learning WHERE studentID = ?";
+            preparedStmt = con.prepareStatement(query);
+            preparedStmt.setInt(1, user.getID());
+            preparedStmt.execute();
+            query = "DELETE from Student WHERE studentID = ?";
+            preparedStmt = con.prepareStatement(query);
+            preparedStmt.setInt(1, user.getID());
+            preparedStmt.execute();
+            query = "DELETE from allUser WHERE personID = ? AND isTeacher = 0";
+            preparedStmt = con.prepareStatement(query);
+            preparedStmt.setInt(1, user.getID());
+            preparedStmt.execute();
         } catch (SQLServerException ex) {
             System.out.println(ex);
             throw new daoException("Cannot execute query");

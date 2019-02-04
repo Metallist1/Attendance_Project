@@ -88,4 +88,22 @@ public class DAOManager implements DAOLogicFacade {
         }
     }
 
+    @Override
+    public User editUser(User user, String nameToChange, String urlToChange, int CPRtoChange) throws daoException {
+        try {
+            return userDAO.editUser(user, nameToChange, urlToChange, CPRtoChange);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteUser(User user) throws daoException {
+        try {
+            userDAO.deleteUser(user);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
 }

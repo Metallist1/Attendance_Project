@@ -8,7 +8,6 @@ package attendenceproject.bll;
 import attendenceproject.be.User;
 import java.io.IOException;
 import java.util.List;
-import javafx.collections.ObservableList;
 import attendenceproject.bll.util.searchUser;
 import attendenceproject.bll.exceptions.bllException;
 import attendenceproject.dal.DAOLogicFacade;
@@ -78,6 +77,24 @@ public class Manager implements LogicFacade {
     public List<User> getAllStudentFromTeaccher(User teacher) throws bllException {
         try {
             return logiclayer.getAllStudentFromTeaccher(teacher);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public User editUser(User user, String nameToChange, String urlToChange, int CPRtoChange) throws bllException {
+        try {
+            return logiclayer.editUser(user, nameToChange, urlToChange, CPRtoChange);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteUser(User user) throws bllException {
+        try {
+            logiclayer.deleteUser(user);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }

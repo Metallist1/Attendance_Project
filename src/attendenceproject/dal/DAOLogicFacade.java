@@ -27,4 +27,8 @@ public interface DAOLogicFacade {
 
     public List<User> getAllStudentFromTeaccher(User teacher) throws daoException;
 
+    public User editUser(User user, String nameToChange, String urlToChange, int CPRtoChange) throws daoException;
+
+    public void deleteUser(User user) throws daoException;
+
 }

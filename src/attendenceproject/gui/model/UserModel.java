@@ -101,4 +101,22 @@ public class UserModel {
         }
         return allCurrentUsers;
     }
+
+    public User editUser(User user, String nameToChange, String urlToChange, int CPRtoChange) throws modelException {
+        User editedUser;
+        try {
+            editedUser = logiclayer.editUser(user, nameToChange, urlToChange, CPRtoChange);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+        return editedUser;
+    }
+
+    public void deleteUser(User user) throws modelException {
+        try {
+             logiclayer.deleteUser(user);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+    }
 }

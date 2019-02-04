@@ -27,4 +27,8 @@ public interface LogicFacade {
 
     public List<User> getAllStudentFromTeaccher(User teacher) throws bllException; 
 
+    public User editUser(User user, String nameToChange, String urlToChange, int CPRtoChange) throws bllException;
+
+    public void deleteUser(User user)throws bllException;
+
 }
