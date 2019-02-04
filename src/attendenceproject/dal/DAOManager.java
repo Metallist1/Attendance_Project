@@ -39,12 +39,14 @@ public class DAOManager implements DAOLogicFacade {
     public User checkLogin(String username, String password) throws daoException {
         try {
             User logedInUser = userDAO.checkLogin(username, password);
-            System.out.println(logedInUser.getName());
-                        System.out.println(logedInUser.isTeacher());
-           /* if(logedInUser.isTeacher() == 0){
-               userDAO.markAttendence(logedInUser);
-            }*/
-            return logedInUser;
+            if (logedInUser != null) {
+                if (logedInUser.isTeacher() == 0) {
+                    userDAO.markAttendence(logedInUser);
+                }
+                return logedInUser;
+            } else {
+                throw new daoException("Inncorect login. Check your username and password");
+            }
         } catch (daoException ex) {
             throw new daoException(ex.getMessage());
         }

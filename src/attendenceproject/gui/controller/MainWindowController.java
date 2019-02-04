@@ -30,8 +30,8 @@ public class MainWindowController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         userModel = UserModel.getInstance();
         try {
-         User newUser =   userModel.checkLogin("Jeppe1", "Jeppe2");
-            userModel.getAllUsers(); //Loads all movies
+         User newUser =   userModel.checkLogin("lscoffham0", "QfEtRxxb");
+           // userModel.getAllUsers(); //Loads all movies
         } catch (modelException ex) {
             setUpAlert(ex.getMessage());
         }

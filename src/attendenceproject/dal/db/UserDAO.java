@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import attendenceproject.dal.exceptions.daoException;
+import java.sql.BatchUpdateException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  *
@@ -50,14 +52,16 @@ public class UserDAO {
     }
 
     public User checkLogin(String username, String password) throws daoException {
-        User logedInUser = null ;
+        User logedInUser = null;
         try (Connection con = ds.getConnection()) {
             String query = ""
-                    + "SELECT Teacher.name as tName , Teacher.id as tID , Student.name as sName , Student.photo as sPhoto , Student.id as sID , Student.CPR as sClass , allUser.isTeacher as isTeacher FROM allUser "
+                    + "SELECT Teacher.name as tName , Teacher.teacherID as tID , Student.name as sName , Student.photo as sPhoto , Student.studentID as sID , allUser.isTeacher as isTeacher , Is_Learning.studentID as sClass FROM allUser "
                     + "INNER JOIN Teacher "
                     + "ON allUser.personID = Teacher.teacherID "
                     + "INNER JOIN Student "
                     + "ON allUser.personID = Student.studentID "
+                    + "INNER JOIN Is_Learning "
+                    + "ON Student.studentID = Is_Learning.studentID "
                     + "WHERE allUser.username = ? AND allUser.password = ?";
 
             PreparedStatement ps = con.prepareStatement(query);
@@ -65,19 +69,15 @@ public class UserDAO {
             ps.setString(1, username);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                throw new daoException("Cannot incorrect username or password");
-            } else {
-                System.out.println(rs.getString("tName"));
-                while (rs.next()) {
-                    if (rs.getInt("isTeacher") == 0) {
-                        logedInUser=  new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
-                    } else {
-                        logedInUser= new User(rs.getString("tName"), rs.getInt("tID"), 1);
-                    }
+            while (rs.next()) {
+                if (rs.getInt("isTeacher") == 0) {
+                    logedInUser = new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
+                } else {
+                    logedInUser = new User(rs.getString("tName"), rs.getInt("tID"), 1);
                 }
-                return logedInUser;
             }
+            return logedInUser;
+
         } catch (SQLServerException ex) {
             System.out.println(ex);
             throw new daoException("Cannot execute query");
@@ -87,7 +87,23 @@ public class UserDAO {
         }
     }
 
-    public void markAttendence(User logedInUser) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void markAttendence(User logedInUser) throws daoException {
+        java.util.Date utilStartDate = new Date();
+        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
+        String sql = "INSERT INTO Attendance(studentID,classID,date) VALUES (?,?,?)";
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, logedInUser.getID());
+            ps.setInt(2, logedInUser.getCurrentClass());
+            ps.setDate(3, date);
+            ps.addBatch();
+            ps.executeBatch();
+        }  catch (SQLException ex) {
+            if (ex.getSQLState().startsWith("23")) {
+                throw new daoException("You already checked your attendence");
+            }else{
+            throw new daoException("Cannot execute query");
+            }
+        }
     }
 }
