@@ -52,4 +52,13 @@ public class DAOManager implements DAOLogicFacade {
         }
     }
 
+    @Override
+    public List<User> getCurrentClassAttendingStudents(int currentClass) throws daoException {
+        try {
+            return userDAO.getCurrentClassAttendingStudents(currentClass);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
 }

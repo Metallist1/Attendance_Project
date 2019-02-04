@@ -22,7 +22,7 @@ public class UserModel {
 
     private static final UserModel UserSingle = new UserModel();
     private final LogicFacade logiclayer;
-    private ObservableList<User> allUsers;
+    private ObservableList<User> allCurrentUsers;
 
     /*
     Initialises the logic layer manager
@@ -45,10 +45,10 @@ public class UserModel {
     Gets all categories from database and then returns a string list of all categories
      */
     public ObservableList<User> getAllUsers() throws modelException {
-        allUsers = FXCollections.observableArrayList();
+        allCurrentUsers = FXCollections.observableArrayList();
         try {
-            allUsers.addAll(logiclayer.getAllUsers());
-            return allUsers;
+            allCurrentUsers.addAll(logiclayer.getAllUsers());
+            return allCurrentUsers;
         } catch (bllException ex) {
             throw new modelException(ex.getMessage());
         }
@@ -60,5 +60,15 @@ public class UserModel {
         } catch (bllException ex) {
             throw new modelException(ex.getMessage());
         }
+    }
+
+    public ObservableList<User> getCurrentClassAttendingStudents(int currentClass) throws modelException {
+        allCurrentUsers = FXCollections.observableArrayList();
+        try {
+            allCurrentUsers.addAll(logiclayer.getCurrentClassAttendingStudents(currentClass));
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+        return allCurrentUsers;
     }
 }

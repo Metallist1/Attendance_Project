@@ -46,4 +46,13 @@ public class Manager implements LogicFacade {
         }
     }
 
+    @Override
+    public List<User> getCurrentClassAttendingStudents(int currentClass) throws bllException {
+        try {
+            return logiclayer.getCurrentClassAttendingStudents(currentClass);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
+    }
+
 }

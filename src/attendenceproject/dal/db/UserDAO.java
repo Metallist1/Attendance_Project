@@ -98,12 +98,65 @@ public class UserDAO {
             ps.setDate(3, date);
             ps.addBatch();
             ps.executeBatch();
-        }  catch (SQLException ex) {
+        } catch (SQLException ex) {
             if (ex.getSQLState().startsWith("23")) {
                 throw new daoException("You already checked your attendence");
-            }else{
-            throw new daoException("Cannot execute query");
+            } else {
+                throw new daoException("Cannot execute query");
             }
+        }
+    }
+
+    public List<User> getCurrentClassAttendingStudents(int currentClass) throws daoException{
+        List<User> allCurrentUsers = new ArrayList<>(); 
+        java.util.Date utilStartDate = new Date();
+        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
+        try (Connection con = ds.getConnection()) {
+            String query = "SELECT * FROM Attendance WHERE date = ? AND classID = ?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setDate(1, date);
+            ps.setInt(2, currentClass);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("studentID");
+                allCurrentUsers.add(getSingleStudentInfo(id)); 
+            }
+            return allCurrentUsers; 
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot execute query");
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
+        }
+    }
+
+    private User getSingleStudentInfo(int id) throws daoException{
+        User logedInUser = null;
+        try (Connection con = ds.getConnection()) {
+            String query = ""
+                    + "SELECT Student.name as sName , Student.photo as sPhoto , Student.studentID as sID , Is_Learning.studentID as sClass FROM Student "
+                    + "INNER JOIN Is_Learning "
+                    + "ON Student.studentID = Is_Learning.studentID "
+                    + "WHERE Student.studentID = ? ";
+
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                    logedInUser = new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
+            }
+            return logedInUser;
+
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot execute query");
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
         }
     }
 }

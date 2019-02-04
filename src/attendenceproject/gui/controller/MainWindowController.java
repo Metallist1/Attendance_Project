@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import attendenceproject.gui.exceptions.modelException;
+import javafx.collections.ObservableList;
 
 /**
  * FXML Controller class
@@ -30,7 +31,9 @@ public class MainWindowController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         userModel = UserModel.getInstance();
         try {
-         User newUser =   userModel.checkLogin("lscoffham0", "QfEtRxxb");
+         //User newUser = userModel.checkLogin("lscoffham0", "QfEtRxxb");
+         ObservableList<User> newUserList = userModel.getCurrentClassAttendingStudents(1);
+            System.out.println(newUserList);
            // userModel.getAllUsers(); //Loads all movies
         } catch (modelException ex) {
             setUpAlert(ex.getMessage());

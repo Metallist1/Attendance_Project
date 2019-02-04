@@ -19,4 +19,6 @@ public interface DAOLogicFacade {
 
     public User checkLogin(String username, String password) throws daoException;
 
+    public List<User> getCurrentClassAttendingStudents(int currentClass) throws daoException;
+
 }

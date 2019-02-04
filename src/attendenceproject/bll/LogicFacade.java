@@ -19,4 +19,6 @@ public interface LogicFacade {
 
     public User checkLogin(String username, String password) throws bllException;
 
+    public List<User> getCurrentClassAttendingStudents(int currentClass) throws bllException;
+
 }
