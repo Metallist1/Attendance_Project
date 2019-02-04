@@ -61,4 +61,31 @@ public class DAOManager implements DAOLogicFacade {
         }
     }
 
+    @Override
+    public List<User> getAllStudentFromClass(int selectedClass) throws daoException {
+        try {
+            return userDAO.getAllStudentFromClass(selectedClass);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public User addStudent(String name, String url, int CPR) throws daoException {
+        try {
+            return userDAO.addStudent(name, url, CPR);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<User> getAllStudentFromTeaccher(User teacher) throws daoException {
+        try {
+            return userDAO.getAllStudentFromTeaccher(teacher);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
 }

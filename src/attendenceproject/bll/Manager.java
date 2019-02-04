@@ -55,4 +55,32 @@ public class Manager implements LogicFacade {
         }
     }
 
+    @Override
+    public List<User> getAllStudentFromClass(int selectedClass) throws bllException {
+        try {
+            return logiclayer.getAllStudentFromClass(selectedClass);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public User addStudent(String name, String url, int CPR) throws bllException {
+
+        try {
+            return logiclayer.addStudent(name, url, CPR);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<User> getAllStudentFromTeaccher(User teacher) throws bllException {
+        try {
+            return logiclayer.getAllStudentFromTeaccher(teacher);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
+    }
+
 }

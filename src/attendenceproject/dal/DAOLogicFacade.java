@@ -21,4 +21,10 @@ public interface DAOLogicFacade {
 
     public List<User> getCurrentClassAttendingStudents(int currentClass) throws daoException;
 
+    public List<User> getAllStudentFromClass(int selectedClass) throws daoException;
+
+    public User addStudent(String name, String url, int CPR) throws daoException;
+
+    public List<User> getAllStudentFromTeaccher(User teacher) throws daoException;
+
 }

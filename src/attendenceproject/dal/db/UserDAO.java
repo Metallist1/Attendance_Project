@@ -107,8 +107,8 @@ public class UserDAO {
         }
     }
 
-    public List<User> getCurrentClassAttendingStudents(int currentClass) throws daoException{
-        List<User> allCurrentUsers = new ArrayList<>(); 
+    public List<User> getCurrentClassAttendingStudents(int currentClass) throws daoException {
+        List<User> allCurrentUsers = new ArrayList<>();
         java.util.Date utilStartDate = new Date();
         java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
         try (Connection con = ds.getConnection()) {
@@ -121,9 +121,9 @@ public class UserDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("studentID");
-                allCurrentUsers.add(getSingleStudentInfo(id)); 
+                allCurrentUsers.add(getSingleStudentInfo(id));
             }
-            return allCurrentUsers; 
+            return allCurrentUsers;
         } catch (SQLServerException ex) {
             System.out.println(ex);
             throw new daoException("Cannot execute query");
@@ -133,7 +133,7 @@ public class UserDAO {
         }
     }
 
-    private User getSingleStudentInfo(int id) throws daoException{
+    private User getSingleStudentInfo(int id) throws daoException {
         User logedInUser = null;
         try (Connection con = ds.getConnection()) {
             String query = ""
@@ -147,10 +147,98 @@ public class UserDAO {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                    logedInUser = new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
+                logedInUser = new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
             }
             return logedInUser;
 
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot execute query");
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
+        }
+    }
+
+    public List<User> getAllStudentFromClass(int selectedClass) throws daoException {
+        List<User> allCurrentUsers = new ArrayList<>();
+        java.util.Date utilStartDate = new Date();
+        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
+        try (Connection con = ds.getConnection()) {
+            String query = "SELECT * FROM Is_Learning WHERE classID = ? ";
+
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, selectedClass);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("studentID");
+                allCurrentUsers.add(getSingleStudentInfo(id));
+            }
+            return allCurrentUsers;
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot execute query");
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
+        }
+    }
+
+    public User addStudent(String name, String url, int CPR) throws daoException {
+        String sql = "INSERT INTO Student(name,photo,CPR,studentID) VALUES (?,?,?,?)";
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, name);
+            ps.setString(2, url);
+            ps.setFloat(3, CPR);
+            ps.setInt(4, getNewestStudentID());
+            ps.addBatch();                   
+            ps.executeBatch();         
+            User usr = new User(name, url,getNewestStudentID(), 0,0);
+            return usr; //Returns the movie object
+        } catch (SQLServerException ex) {
+            throw new daoException("Cannot connect to server");
+        } catch (SQLException ex) {
+            throw new daoException("Cannot execute query");
+        }
+    }
+
+    /*
+    Gets the top Movie ID from the database so it is possible to create the movie object
+     */
+    private int getNewestStudentID() throws daoException {
+        int newestID = -1; // Default ID not found
+        try (Connection con = ds.getConnection()) {
+            String query = "SELECT TOP(1) * FROM Student ORDER by studentID desc"; //Selects the biggest song ID in the database
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            ResultSet rs = preparedStmt.executeQuery();
+            while (rs.next()) {
+                newestID = rs.getInt("id");
+            }
+            return newestID;
+        } catch (SQLServerException ex) {
+            throw new daoException("Cannot connect to server");
+        } catch (SQLException ex) {
+            throw new daoException("Cannot execute query");
+        }
+    }
+
+    public List<User> getAllStudentFromTeaccher(User teacher) throws daoException {
+                List<User> allCurrentUsers = new ArrayList<User>();
+        try (Connection con = ds.getConnection()) {
+            String query = "SELECT * FROM Is_Teaching WHERE teacherID = ? ";
+
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, teacher.getID());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("classID");
+                allCurrentUsers = new ArrayList<User>(allCurrentUsers);
+                allCurrentUsers.addAll(getAllStudentFromClass(id));
+            }
+            return allCurrentUsers;
         } catch (SQLServerException ex) {
             System.out.println(ex);
             throw new daoException("Cannot execute query");

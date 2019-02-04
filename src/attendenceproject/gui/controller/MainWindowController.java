@@ -32,7 +32,11 @@ public class MainWindowController implements Initializable {
         userModel = UserModel.getInstance();
         try {
          //User newUser = userModel.checkLogin("lscoffham0", "QfEtRxxb");
-         ObservableList<User> newUserList = userModel.getCurrentClassAttendingStudents(1);
+         //ObservableList<User> newUserList = userModel.getCurrentClassAttendingStudents(1);
+        //ObservableList<User>  newUserList = userModel.getAllStudentFromClass (1);
+        ObservableList<User>  newUserList = userModel.getAllStudentFromTeaccher (new User("Jeppe", 1 , 1));
+        
+        //User newUser =  userModel.addStudent("Living meme", "" , 15251515 );
             System.out.println(newUserList);
            // userModel.getAllUsers(); //Loads all movies
         } catch (modelException ex) {

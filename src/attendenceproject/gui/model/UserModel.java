@@ -71,4 +71,34 @@ public class UserModel {
         }
         return allCurrentUsers;
     }
+
+    public ObservableList<User> getAllStudentFromClass(int selectedClass) throws modelException {
+        allCurrentUsers = FXCollections.observableArrayList();
+        try {
+            allCurrentUsers.addAll(logiclayer.getAllStudentFromClass(selectedClass));
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+        return allCurrentUsers;
+    }
+
+    public User addStudent(String name, String url, int CPR) throws modelException {
+        User newUser;
+        try {
+            newUser = logiclayer.addStudent(name, url, CPR);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+        return newUser;
+    }
+
+    public ObservableList<User> getAllStudentFromTeaccher(User teacher) throws modelException {
+        allCurrentUsers = FXCollections.observableArrayList();
+        try {
+            allCurrentUsers.addAll(logiclayer.getAllStudentFromTeaccher(teacher));
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+        return allCurrentUsers;
+    }
 }
