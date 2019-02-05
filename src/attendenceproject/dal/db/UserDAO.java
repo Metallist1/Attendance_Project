@@ -294,4 +294,41 @@ public class UserDAO {
             throw new daoException("Cannot connect to server");
         }
     }
+
+    public void changeAttendence(User user, boolean isAttending) throws daoException {
+        java.util.Date utilStartDate = new Date();
+        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
+        if (isAttending) {
+            String sql = "INSERT INTO Attendance(studentID,classID,date) VALUES (?,?,?)";
+            try (Connection con = ds.getConnection()) {
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, user.getID());
+                ps.setInt(2, user.getCurrentClass());
+                ps.setDate(3, date);
+                ps.addBatch();
+                ps.executeBatch();
+            } catch (SQLException ex) {
+            if (ex.getSQLState().startsWith("23")) {
+                throw new daoException("Attendance already marked");
+            } else {
+                throw new daoException("Cannot execute query");
+            }
+        }
+        } else {
+            try (Connection con = ds.getConnection()) {
+                String query = "DELETE from Attendance WHERE studentID = ? AND classID = ? AND date = ? ";
+                PreparedStatement preparedStmt = con.prepareStatement(query);
+                preparedStmt.setInt(1, user.getID());
+                preparedStmt.setInt(2, user.getCurrentClass());
+                preparedStmt.setDate(3, date);
+                preparedStmt.execute();
+            } catch (SQLServerException ex) {
+                System.out.println(ex);
+                throw new daoException("Cannot execute query");
+            } catch (SQLException ex) {
+                System.out.println(ex);
+                throw new daoException("Cannot connect to server");
+            }
+        }
+    }
 }

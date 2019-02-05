@@ -13,6 +13,7 @@ import attendenceproject.bll.exceptions.bllException;
 import attendenceproject.dal.DAOLogicFacade;
 import attendenceproject.dal.DAOManager;
 import attendenceproject.dal.exceptions.daoException;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -100,4 +101,17 @@ public class Manager implements LogicFacade {
         }
     }
 
+    @Override
+    public ObservableList<User> search(ObservableList<User> currentUsers, String userToFind) {
+        return searchforUser.search(currentUsers, userToFind);
+    }
+
+    @Override
+    public void changeAttendence(User user, boolean isAttending) throws bllException {
+        try {
+            logiclayer.changeAttendence(user,isAttending);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
+    }
 }

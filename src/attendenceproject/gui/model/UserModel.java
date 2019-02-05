@@ -114,7 +114,19 @@ public class UserModel {
 
     public void deleteUser(User user) throws modelException {
         try {
-             logiclayer.deleteUser(user);
+            logiclayer.deleteUser(user);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+    }
+
+    public ObservableList<User> search(ObservableList<User> currentUsers, String userToFind) {
+        return logiclayer.search(currentUsers, userToFind);
+    }
+
+    public void changeAttendence(User user, boolean isAttending) throws modelException{
+        try {
+            logiclayer.changeAttendence(user, isAttending);
         } catch (bllException ex) {
             throw new modelException(ex.getMessage());
         }

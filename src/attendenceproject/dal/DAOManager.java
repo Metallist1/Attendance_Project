@@ -106,4 +106,13 @@ public class DAOManager implements DAOLogicFacade {
         }
     }
 
+    @Override
+    public void changeAttendence(User user, boolean isAttending) throws daoException {
+        try {
+            userDAO.changeAttendence(user,isAttending);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
 }
