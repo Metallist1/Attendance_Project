@@ -31,4 +31,6 @@ public interface DAOLogicFacade {
 
     public void deleteUser(User user) throws daoException;
 
+    public void changeAttendence(User user, boolean isAttending) throws daoException;
+
 }

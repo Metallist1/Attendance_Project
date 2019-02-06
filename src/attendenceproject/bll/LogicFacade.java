@@ -8,6 +8,7 @@ package attendenceproject.bll;
 import attendenceproject.be.User;
 import java.util.List;
 import attendenceproject.bll.exceptions.bllException;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -30,5 +31,9 @@ public interface LogicFacade {
     public User editUser(User user, String nameToChange, String urlToChange, int CPRtoChange) throws bllException;
 
     public void deleteUser(User user)throws bllException;
+
+    public ObservableList<User> search(ObservableList<User> currentUsers, String userToFind);
+
+    public void changeAttendence(User user, boolean attending) throws bllException;;
 
 }
