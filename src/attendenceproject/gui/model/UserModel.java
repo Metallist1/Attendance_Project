@@ -13,6 +13,8 @@ import attendenceproject.bll.Manager;
 import attendenceproject.bll.exceptions.bllException;
 import attendenceproject.gui.exceptions.modelException;
 import attendenceproject.bll.LogicFacade;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -114,7 +116,35 @@ public class UserModel {
 
     public void deleteUser(User user) throws modelException {
         try {
-             logiclayer.deleteUser(user);
+            logiclayer.deleteUser(user);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+    }
+
+    public ObservableList<User> search(ObservableList<User> currentUsers, String userToFind) {
+        return logiclayer.search(currentUsers, userToFind);
+    }
+
+    public void changeAttendence(User user, boolean isAttending) throws modelException{
+        try {
+            logiclayer.changeAttendence(user, isAttending);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+    }
+
+    public List<Date> selectIndividualStatistics(User user) throws modelException{
+        try {
+           return logiclayer.selectIndividualStatistics(user);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+    }
+
+    public List<Date> getGlobalAttendance(int classID) throws modelException{
+        try {
+           return logiclayer.getGlobalAttendance(classID);
         } catch (bllException ex) {
             throw new modelException(ex.getMessage());
         }

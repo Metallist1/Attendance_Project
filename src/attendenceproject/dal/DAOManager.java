@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.List;
 import attendenceproject.dal.db.UserDAO;
 import attendenceproject.dal.exceptions.daoException;
+import java.util.Date;
 
 /**
  *
@@ -101,6 +102,33 @@ public class DAOManager implements DAOLogicFacade {
     public void deleteUser(User user) throws daoException {
         try {
             userDAO.deleteUser(user);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void changeAttendence(User user, boolean isAttending) throws daoException {
+        try {
+            userDAO.changeAttendence(user,isAttending);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<Date> selectIndividualStatistics(User user) throws daoException {
+         try {
+           return userDAO.selectIndividualStatistics(user);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<Date> getGlobalAttendance(int classID) throws daoException {
+         try {
+           return userDAO.getGlobalAttendance(classID);
         } catch (daoException ex) {
             throw new daoException(ex.getMessage());
         }
