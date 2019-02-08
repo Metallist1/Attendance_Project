@@ -32,6 +32,10 @@ public class MainWindowController implements Initializable {
         userModel = UserModel.getInstance();
         try {
             //User newUser = userModel.checkLogin("lscoffham0", "QfEtRxxb");
+<<<<<<< HEAD
+=======
+            
+>>>>>>> e876aafb8dd6d38dd372ff831d8c67eb4fea1d3a
             //ObservableList<User> newUserList = userModel.getCurrentClassAttendingStudents(1);
             //ObservableList<User>  newUserList = userModel.getAllStudentFromClass (1);
             // ObservableList<User>  newUserList = userModel.getAllStudentFromTeaccher (new User("Jeppe", 1 , 1));
@@ -40,7 +44,13 @@ public class MainWindowController implements Initializable {
             //User newUser =  userModel.addStudent("Living meme", "" , 15251515 );
             // System.out.println(editedUser);
             // userModel.getAllUsers(); 
+<<<<<<< HEAD
             userModel.changeAttendence(new User("John", "", 2, 1, 0), true);
+=======
+            //userModel.changeAttendence(new User("John", "", 2, 1, 0), true);
+           // System.out.println(userModel.selectIndividualStatistics (new User("John", "", 2, 1, 0)));
+            System.out.println(userModel.getGlobalAttendance(1));
+>>>>>>> e876aafb8dd6d38dd372ff831d8c67eb4fea1d3a
         } catch (modelException ex) {
             setUpAlert(ex.getMessage());
         }

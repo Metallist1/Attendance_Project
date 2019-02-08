@@ -8,6 +8,7 @@ package attendenceproject.dal;
 import attendenceproject.be.User;
 import java.util.List;
 import attendenceproject.dal.exceptions.daoException;
+import java.util.Date;
 
 /**
  *
@@ -33,4 +34,11 @@ public interface DAOLogicFacade {
 
     public void changeAttendence(User user, boolean isAttending) throws daoException;
 
+<<<<<<< HEAD
+=======
+    public List<Date> selectIndividualStatistics(User user) throws daoException;
+
+    public List<Date> getGlobalAttendance(int classID) throws daoException;
+
+>>>>>>> e876aafb8dd6d38dd372ff831d8c67eb4fea1d3a
 }
