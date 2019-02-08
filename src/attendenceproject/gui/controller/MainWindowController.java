@@ -35,7 +35,7 @@ public class MainWindowController implements Initializable {
             
             //ObservableList<User> newUserList = userModel.getCurrentClassAttendingStudents(1);
             //ObservableList<User>  newUserList = userModel.getAllStudentFromClass (1);
-            // ObservableList<User>  newUserList = userModel.getAllStudentFromTeaccher (new User("Jeppe", 1 , 1));
+            // ObservableList<User>  newUserList = userModel.getAllStudentFromTeacher (new User("Jeppe", 1 , 1));
             //User editedUser = userModel.editUser(new User("John",  "",  1,  1,  0) ,"Kent" , "Test" , 1516531);
             // userModel.deleteUser(new User("John",  "",  2,  1,  0));
             //User newUser =  userModel.addStudent("Living meme", "" , 15251515 );

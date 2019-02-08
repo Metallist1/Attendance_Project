@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,48 +62,7 @@ public class UserDAO {
         }
     }
 
-    public void markAttendence(User logedInUser) throws daoException {
-        String sql = "INSERT INTO Attendance(studentID,classID) VALUES (?,?)";
-        try (Connection con = ds.getConnection()) {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, logedInUser.getID());
-            ps.setInt(2, logedInUser.getCurrentClass());
-            ps.addBatch();
-            ps.executeBatch();
-        } catch (SQLException ex) {
-            System.out.println(ex);
-            if (ex.getSQLState().startsWith("23")) {
-                throw new daoException("You already checked your attendence");
-            } else {
-                throw new daoException("Cannot execute query");
-            }
-        }
-    }
-
-    public List<User> getCurrentClassAttendingStudents(int currentClass) throws daoException {
-        List<User> allCurrentUsers = new ArrayList<>();
-        java.util.Date utilStartDate = new Date();
-        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
-        try (Connection con = ds.getConnection()) {
-            String query = "SELECT * FROM Attendance WHERE date = ? AND classID = ?";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setDate(1, date);
-            ps.setInt(2, currentClass);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                allCurrentUsers.add(getSingleStudentInfo(rs.getInt("studentID")));
-            }
-            return allCurrentUsers;
-        } catch (SQLServerException ex) {
-            System.out.println(ex);
-            throw new daoException("Cannot execute query");
-        } catch (SQLException ex) {
-            System.out.println(ex);
-            throw new daoException("Cannot connect to server");
-        }
-    }
-
-    private User getSingleStudentInfo(int id) throws daoException {
+    public User getSingleStudentInfo(int id) throws daoException {
         try (Connection con = ds.getConnection()) {
             String query = "SELECT Student.name as sName , Student.photo as sPhoto , Student.studentID as sID , Is_Learning.studentID as sClass FROM Student "
                     + "INNER JOIN Is_Learning "
@@ -113,6 +71,7 @@ public class UserDAO {
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
+            rs.next();
             return new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
         } catch (SQLServerException ex) {
             System.out.println(ex);
@@ -125,8 +84,6 @@ public class UserDAO {
 
     public List<User> getAllStudentFromClass(int selectedClass) throws daoException {
         List<User> allCurrentUsers = new ArrayList<>();
-        java.util.Date utilStartDate = new Date();
-        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
         try (Connection con = ds.getConnection()) {
             String query = "SELECT * FROM Is_Learning WHERE classID = ? ";
             PreparedStatement ps = con.prepareStatement(query);
@@ -164,19 +121,13 @@ public class UserDAO {
         }
     }
 
-    /*
-    Gets the top Movie ID from the database so it is possible to create the movie object
-     */
     private int getNewestStudentID() throws daoException {
-        int newestID = -1; // Default ID not found
         try (Connection con = ds.getConnection()) {
             String query = "SELECT TOP(1) * FROM Student ORDER by studentID desc"; //Selects the biggest song ID in the database
             PreparedStatement preparedStmt = con.prepareStatement(query);
             ResultSet rs = preparedStmt.executeQuery();
-            while (rs.next()) {
-                newestID = rs.getInt("id");
-            }
-            return newestID;
+            rs.next();
+            return rs.getInt("id");
         } catch (SQLServerException ex) {
             throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
@@ -184,7 +135,7 @@ public class UserDAO {
         }
     }
 
-    public List<User> getAllStudentFromTeaccher(User teacher) throws daoException {
+    public List<User> getAllStudentFromTeacher(User teacher) throws daoException {
         List<User> allCurrentUsers = new ArrayList<User>();
         try (Connection con = ds.getConnection()) {
             String query = "SELECT * FROM Is_Teaching WHERE teacherID = ? ";
@@ -234,84 +185,6 @@ public class UserDAO {
             preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, user.getID());
             preparedStmt.execute();
-        } catch (SQLServerException ex) {
-            System.out.println(ex);
-            throw new daoException("Cannot execute query");
-        } catch (SQLException ex) {
-            System.out.println(ex);
-            throw new daoException("Cannot connect to server");
-        }
-    }
-
-    public void changeAttendence(User user, boolean isAttending) throws daoException {
-        java.util.Date utilStartDate = new Date();
-        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
-        if (isAttending) {
-            String sql = "INSERT INTO Attendance(studentID,classID,date) VALUES (?,?,?)";
-            try (Connection con = ds.getConnection()) {
-                PreparedStatement ps = con.prepareStatement(sql);
-                ps.setInt(1, user.getID());
-                ps.setInt(2, user.getCurrentClass());
-                ps.setDate(3, date);
-                ps.addBatch();
-                ps.executeBatch();
-            } catch (SQLException ex) {
-                if (ex.getSQLState().startsWith("23")) {
-                    throw new daoException("Attendance already marked");
-                } else {
-                    throw new daoException("Cannot execute query");
-                }
-            }
-        } else {
-            try (Connection con = ds.getConnection()) {
-                String query = "DELETE from Attendance WHERE studentID = ? AND classID = ? AND date = ? ";
-                PreparedStatement preparedStmt = con.prepareStatement(query);
-                preparedStmt.setInt(1, user.getID());
-                preparedStmt.setInt(2, user.getCurrentClass());
-                preparedStmt.setDate(3, date);
-                preparedStmt.execute();
-            } catch (SQLServerException ex) {
-                System.out.println(ex);
-                throw new daoException("Cannot execute query");
-            } catch (SQLException ex) {
-                System.out.println(ex);
-                throw new daoException("Cannot connect to server");
-            }
-        }
-    }
-
-    public List<Date> selectIndividualStatistics(User user) throws daoException {
-        List<Date> allAttendedDates = new ArrayList<>();
-        try (Connection con = ds.getConnection()) {
-            String query = "SELECT date FROM Attendance WHERE studentID = ? AND classID = ?";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, user.getID());
-            ps.setInt(2, user.getCurrentClass());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                allAttendedDates.add(rs.getDate("date"));
-            }
-            return allAttendedDates;
-        } catch (SQLServerException ex) {
-            System.out.println(ex);
-            throw new daoException("Cannot execute query");
-        } catch (SQLException ex) {
-            System.out.println(ex);
-            throw new daoException("Cannot connect to server");
-        }
-    }
-
-    public List<Date> getGlobalAttendance(int classID) throws daoException {
-        List<Date> allAttendedDates = new ArrayList<>();
-        try (Connection con = ds.getConnection()) {
-            String query = "SELECT date FROM Attendance WHERE classID = ?";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, classID);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                allAttendedDates.add(rs.getDate("date"));
-            }
-            return allAttendedDates;
         } catch (SQLServerException ex) {
             System.out.println(ex);
             throw new daoException("Cannot execute query");

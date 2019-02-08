@@ -6,6 +6,7 @@
 package attendenceproject.dal;
 
 import attendenceproject.be.User;
+import attendenceproject.dal.db.AttendanceDAO;
 import java.io.IOException;
 import java.util.List;
 import attendenceproject.dal.db.UserDAO;
@@ -19,12 +20,14 @@ import java.util.Date;
 public class DAOManager implements DAOLogicFacade {
 
     private final UserDAO userDAO;
+    private final AttendanceDAO attendanceDAO;
 
     /*
     Initialises all classes in DAL
      */
     public DAOManager() throws IOException {
         userDAO = new UserDAO();
+        attendanceDAO = new AttendanceDAO();
     }
 
     @Override
@@ -33,7 +36,7 @@ public class DAOManager implements DAOLogicFacade {
             User logedInUser = userDAO.checkLogin(username, password);
             if (logedInUser != null) {
                 if (logedInUser.isTeacher() == 0) {
-                    userDAO.markAttendence(logedInUser);
+                    attendanceDAO.markAttendence(logedInUser);
                 }
                 return logedInUser;
             } else {
@@ -47,7 +50,7 @@ public class DAOManager implements DAOLogicFacade {
     @Override
     public List<User> getCurrentClassAttendingStudents(int currentClass) throws daoException {
         try {
-            return userDAO.getCurrentClassAttendingStudents(currentClass);
+            return attendanceDAO.getCurrentClassAttendingStudents(currentClass);
         } catch (daoException ex) {
             throw new daoException(ex.getMessage());
         }
@@ -72,9 +75,9 @@ public class DAOManager implements DAOLogicFacade {
     }
 
     @Override
-    public List<User> getAllStudentFromTeaccher(User teacher) throws daoException {
+    public List<User> getAllStudentFromTeacher(User teacher) throws daoException {
         try {
-            return userDAO.getAllStudentFromTeaccher(teacher);
+            return userDAO.getAllStudentFromTeacher(teacher);
         } catch (daoException ex) {
             throw new daoException(ex.getMessage());
         }
@@ -101,7 +104,7 @@ public class DAOManager implements DAOLogicFacade {
     @Override
     public void changeAttendence(User user, boolean isAttending) throws daoException {
         try {
-            userDAO.changeAttendence(user,isAttending);
+            attendanceDAO.changeAttendence(user, isAttending);
         } catch (daoException ex) {
             throw new daoException(ex.getMessage());
         }
@@ -109,8 +112,8 @@ public class DAOManager implements DAOLogicFacade {
 
     @Override
     public List<Date> selectIndividualStatistics(User user) throws daoException {
-         try {
-           return userDAO.selectIndividualStatistics(user);
+        try {
+            return attendanceDAO.selectIndividualStatistics(user);
         } catch (daoException ex) {
             throw new daoException(ex.getMessage());
         }
@@ -118,8 +121,8 @@ public class DAOManager implements DAOLogicFacade {
 
     @Override
     public List<Date> getGlobalAttendance(int classID) throws daoException {
-         try {
-           return userDAO.getGlobalAttendance(classID);
+        try {
+            return attendanceDAO.getGlobalAttendance(classID);
         } catch (daoException ex) {
             throw new daoException(ex.getMessage());
         }
