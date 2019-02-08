@@ -17,8 +17,6 @@ import javafx.collections.ObservableList;
  */
 public interface LogicFacade {
 
-    public List<User> getAllUsers() throws bllException;
-
     public User checkLogin(String username, String password) throws bllException;
 
     public List<User> getCurrentClassAttendingStudents(int currentClass) throws bllException;

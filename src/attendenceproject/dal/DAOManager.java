@@ -28,15 +28,6 @@ public class DAOManager implements DAOLogicFacade {
     }
 
     @Override
-    public List<User> getAllUsers() throws daoException {
-        try {
-            return userDAO.getAllUsers();
-        } catch (daoException ex) {
-            throw new daoException(ex.getMessage());
-        }
-    }
-
-    @Override
     public User checkLogin(String username, String password) throws daoException {
         try {
             User logedInUser = userDAO.checkLogin(username, password);

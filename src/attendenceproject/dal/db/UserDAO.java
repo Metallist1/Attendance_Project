@@ -30,25 +30,6 @@ public class UserDAO {
         this.ds = DatabaseConnectionDAO.getInstance().getConnection();
     }
 
-    /*
-    Initialises the constructor. Gets the array from the DatabaseConnectionDAO and sets up the database so the class can use it.
-     */
-    public List<User> getAllUsers() throws daoException {
-        List<User> allUsers = new ArrayList<>();
-        try (Connection con = ds.getConnection()) {
-            String sqlStatement = "SELECT * FROM Movie";
-            Statement statement = con.createStatement();
-            ResultSet rs = statement.executeQuery(sqlStatement);
-            while (rs.next()) {
-            }
-            return allUsers; //Returns the full list
-        } catch (SQLServerException ex) {
-            throw new daoException("Cannot connect to server");
-        } catch (SQLException ex) {
-            throw new daoException("Cannot execute query");
-        }
-    }
-
     public User checkLogin(String username, String password) throws daoException {
         User logedInUser = null;
         try (Connection con = ds.getConnection()) {
@@ -63,19 +44,16 @@ public class UserDAO {
                     + "WHERE allUser.username = ? AND allUser.password = ?";
 
             PreparedStatement ps = con.prepareStatement(query);
-
             ps.setString(1, username);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("isTeacher") == 0) {
-                    logedInUser = new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
-                } else {
-                    logedInUser = new User(rs.getString("tName"), rs.getInt("tID"), 1);
-                }
+            rs.next();
+            if (rs.getInt("isTeacher") == 0) {
+                logedInUser = new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
+            } else {
+                logedInUser = new User(rs.getString("tName"), rs.getInt("tID"), 1);
             }
             return logedInUser;
-
         } catch (SQLServerException ex) {
             System.out.println(ex);
             throw new daoException("Cannot execute query");
@@ -86,17 +64,15 @@ public class UserDAO {
     }
 
     public void markAttendence(User logedInUser) throws daoException {
-        java.util.Date utilStartDate = new Date();
-        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
-        String sql = "INSERT INTO Attendance(studentID,classID,date) VALUES (?,?,?)";
+        String sql = "INSERT INTO Attendance(studentID,classID) VALUES (?,?)";
         try (Connection con = ds.getConnection()) {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, logedInUser.getID());
             ps.setInt(2, logedInUser.getCurrentClass());
-            ps.setDate(3, date);
             ps.addBatch();
             ps.executeBatch();
         } catch (SQLException ex) {
+            System.out.println(ex);
             if (ex.getSQLState().startsWith("23")) {
                 throw new daoException("You already checked your attendence");
             } else {
@@ -111,15 +87,12 @@ public class UserDAO {
         java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
         try (Connection con = ds.getConnection()) {
             String query = "SELECT * FROM Attendance WHERE date = ? AND classID = ?";
-
             PreparedStatement ps = con.prepareStatement(query);
-
             ps.setDate(1, date);
             ps.setInt(2, currentClass);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("studentID");
-                allCurrentUsers.add(getSingleStudentInfo(id));
+                allCurrentUsers.add(getSingleStudentInfo(rs.getInt("studentID")));
             }
             return allCurrentUsers;
         } catch (SQLServerException ex) {
@@ -132,23 +105,15 @@ public class UserDAO {
     }
 
     private User getSingleStudentInfo(int id) throws daoException {
-        User logedInUser = null;
         try (Connection con = ds.getConnection()) {
-            String query = ""
-                    + "SELECT Student.name as sName , Student.photo as sPhoto , Student.studentID as sID , Is_Learning.studentID as sClass FROM Student "
+            String query = "SELECT Student.name as sName , Student.photo as sPhoto , Student.studentID as sID , Is_Learning.studentID as sClass FROM Student "
                     + "INNER JOIN Is_Learning "
                     + "ON Student.studentID = Is_Learning.studentID "
                     + "WHERE Student.studentID = ? ";
-
             PreparedStatement ps = con.prepareStatement(query);
-
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                logedInUser = new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
-            }
-            return logedInUser;
-
+            return new User(rs.getString("sName"), rs.getString("sPhoto"), rs.getInt("sID"), rs.getInt("sClass"), 0);
         } catch (SQLServerException ex) {
             System.out.println(ex);
             throw new daoException("Cannot execute query");
@@ -164,14 +129,11 @@ public class UserDAO {
         java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
         try (Connection con = ds.getConnection()) {
             String query = "SELECT * FROM Is_Learning WHERE classID = ? ";
-
             PreparedStatement ps = con.prepareStatement(query);
-
             ps.setInt(1, selectedClass);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("studentID");
-                allCurrentUsers.add(getSingleStudentInfo(id));
+                allCurrentUsers.add(getSingleStudentInfo(rs.getInt("studentID")));
             }
             return allCurrentUsers;
         } catch (SQLServerException ex) {
@@ -226,15 +188,12 @@ public class UserDAO {
         List<User> allCurrentUsers = new ArrayList<User>();
         try (Connection con = ds.getConnection()) {
             String query = "SELECT * FROM Is_Teaching WHERE teacherID = ? ";
-
             PreparedStatement ps = con.prepareStatement(query);
-
             ps.setInt(1, teacher.getID());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("classID");
                 allCurrentUsers = new ArrayList<User>(allCurrentUsers);
-                allCurrentUsers.addAll(getAllStudentFromClass(id));
+                allCurrentUsers.addAll(getAllStudentFromClass(rs.getInt("classID")));
             }
             return allCurrentUsers;
         } catch (SQLServerException ex) {
@@ -255,8 +214,7 @@ public class UserDAO {
             preparedStmt.setString(3, urlToChange);
             preparedStmt.setInt(4, user.getID());
             preparedStmt.executeUpdate();
-            User us = new User(nameToChange, urlToChange, user.getID(), user.getCurrentClass(), 0); //creates a new song object.
-            return us;
+            return new User(nameToChange, urlToChange, user.getID(), user.getCurrentClass(), 0);
         } catch (SQLServerException ex) {
             System.out.println(ex);
             throw new daoException("Cannot execute query");
@@ -268,16 +226,8 @@ public class UserDAO {
 
     public void deleteUser(User user) throws daoException {
         try (Connection con = ds.getConnection()) {
-            String query = "DELETE from Attendance WHERE studentID = ?";
+            String query = "DELETE from Student WHERE studentID = ?";
             PreparedStatement preparedStmt = con.prepareStatement(query);
-            preparedStmt.setInt(1, user.getID());
-            preparedStmt.execute();
-            query = "DELETE from Is_Learning WHERE studentID = ?";
-            preparedStmt = con.prepareStatement(query);
-            preparedStmt.setInt(1, user.getID());
-            preparedStmt.execute();
-            query = "DELETE from Student WHERE studentID = ?";
-            preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, user.getID());
             preparedStmt.execute();
             query = "DELETE from allUser WHERE personID = ? AND isTeacher = 0";
@@ -334,9 +284,7 @@ public class UserDAO {
         List<Date> allAttendedDates = new ArrayList<>();
         try (Connection con = ds.getConnection()) {
             String query = "SELECT date FROM Attendance WHERE studentID = ? AND classID = ?";
-
             PreparedStatement ps = con.prepareStatement(query);
-
             ps.setInt(1, user.getID());
             ps.setInt(2, user.getCurrentClass());
             ResultSet rs = ps.executeQuery();
@@ -357,9 +305,7 @@ public class UserDAO {
         List<Date> allAttendedDates = new ArrayList<>();
         try (Connection con = ds.getConnection()) {
             String query = "SELECT date FROM Attendance WHERE classID = ?";
-
             PreparedStatement ps = con.prepareStatement(query);
-
             ps.setInt(1, classID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

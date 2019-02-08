@@ -43,19 +43,6 @@ public class UserModel {
         return UserSingle;
     }
 
-    /*
-    Gets all categories from database and then returns a string list of all categories
-     */
-    public ObservableList<User> getAllUsers() throws modelException {
-        allCurrentUsers = FXCollections.observableArrayList();
-        try {
-            allCurrentUsers.addAll(logiclayer.getAllUsers());
-            return allCurrentUsers;
-        } catch (bllException ex) {
-            throw new modelException(ex.getMessage());
-        }
-    }
-
     public User checkLogin(String username, String password) throws modelException {
         try {
             return logiclayer.checkLogin(username, password);

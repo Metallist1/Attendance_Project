@@ -16,8 +16,6 @@ import java.util.Date;
  */
 public interface DAOLogicFacade {
 
-    public List<User> getAllUsers() throws daoException;
-
     public User checkLogin(String username, String password) throws daoException;
 
     public List<User> getCurrentClassAttendingStudents(int currentClass) throws daoException;

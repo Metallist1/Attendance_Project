@@ -34,11 +34,6 @@ public class Manager implements LogicFacade {
     }
 
     @Override
-    public List<User> getAllUsers() throws bllException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public User checkLogin(String username, String password) throws bllException {
         try {
             return logiclayer.checkLogin(username, password);
