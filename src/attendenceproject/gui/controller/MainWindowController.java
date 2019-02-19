@@ -71,12 +71,10 @@ public class MainWindowController implements Initializable {
     private void signUpWithCard(ActionEvent event) {
         try {
             otherPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/cardLoading.fxml"));
+            innerPane.getChildren().add(otherPane);
         } catch (IOException ex) {
             setUpAlert(ex.getMessage());
         }
-
-        AnchorPane.setTopAnchor(otherPane, 47d);
-        innerPane.getChildren().add(otherPane);
 
         Task<User> loadData = new Task<User>() {
             @Override
@@ -102,11 +100,10 @@ public class MainWindowController implements Initializable {
     private void manualLogin(ActionEvent event) {
         try {
             otherPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/manualLogin.fxml"));
+            innerPane.getChildren().add(otherPane);
         } catch (IOException ex) {
             setUpAlert(ex.getMessage());
         }
-        AnchorPane.setTopAnchor(otherPane, 47.2);
-        innerPane.getChildren().add(otherPane);
     }
 
     @FXML
@@ -114,12 +111,10 @@ public class MainWindowController implements Initializable {
 
         try {
             otherPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/cardLoading.fxml"));
+            innerPane.getChildren().add(otherPane);
         } catch (IOException ex) {
             setUpAlert(ex.getMessage());
         }
-
-        AnchorPane.setTopAnchor(otherPane, 47d);
-        innerPane.getChildren().add(otherPane);
 
         Task<User> loadData = new Task<User>() {
             @Override
@@ -162,13 +157,11 @@ public class MainWindowController implements Initializable {
     private void closeLogin(ActionEvent event) throws IOException {
         try {
             otherPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/MainWindowView.fxml"));
+            innerPane.getChildren().removeAll();
+            innerPane.getChildren().add(otherPane);
         } catch (IOException ex) {
             setUpAlert(ex.getMessage());
         }
-        innerPane.getChildren().removeAll();
-        AnchorPane.setTopAnchor(otherPane, 47d);
-        innerPane.getChildren().add(otherPane);
-       
     }
 
 }
