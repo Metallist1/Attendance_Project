@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="448.0" prefWidth="849.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="attendenceproject.gui.controller.MainWindowController" />
+<AnchorPane id="AnchorPane" fx:id="innerPane" prefHeight="448.0" prefWidth="849.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="attendenceproject.gui.controller.MainWindowController">
+   <children>
+      <JFXButton layoutX="130.0" layoutY="173.0" onAction="#signUpWithCard" prefHeight="82.0" prefWidth="154.0" style="-fx-background-color: #0088FF;" text="Login With Card" />
+      <JFXButton layoutX="439.0" layoutY="174.0" onAction="#manualLogin" prefHeight="82.0" prefWidth="146.0" style="-fx-background-color: #0088FF;" text="Login With Credentials" />
+   </children>
+</AnchorPane>
