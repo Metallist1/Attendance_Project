@@ -146,7 +146,7 @@ public class MainWindowController implements Initializable {
         loadData.setOnFailed(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent arg0) {
-                setUpAlert(loadData.getException().getMessage());
+                setUpAlert("Unable to log in");
                 innerPane.getChildren().remove(otherPane);
             }
         });

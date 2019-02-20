@@ -81,7 +81,7 @@ public class UserModel {
         return newUser;
     }
 
-    public ObservableList<User> getAllStudentFromTeaccher(User teacher) throws modelException {
+    public ObservableList<User> getAllStudentFromTeacher(User teacher) throws modelException {
         allCurrentUsers = FXCollections.observableArrayList();
         try {
             allCurrentUsers.addAll(logiclayer.getAllStudentFromTeacher(teacher));
