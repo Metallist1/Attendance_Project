@@ -13,7 +13,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import attendenceproject.gui.exceptions.modelException;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
@@ -23,18 +28,29 @@ import javafx.collections.ObservableList;
 public class MainWindowController implements Initializable {
 
     private UserModel userModel;
-
+    private List<User> user;
+    @FXML
+    private ListView<String> CourseView;
+    @FXML
+    private ListView<String> StudentView;
+    
     /**
      * Initializes the controller class.
      */
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         userModel = UserModel.getInstance();
         try {
-            User newUser = userModel.checkLogin("tbeven1", "tYTIoC");
-            
+            //User newUser = userModel.checkLogin("tbeven1", "tYTIoC");       
             //ObservableList<User> newUserList = userModel.getCurrentClassAttendingStudents(1);
-            //ObservableList<User>  newUserList = userModel.getAllStudentFromClass (1);
+            CourseView.getItems().add("Course 1");
+                       CourseView.getItems().add("Course 2");
+                                  CourseView.getItems().add("Course 3");
+                                 
+            // StudentView.getItems().addAll(newUserList);
             // ObservableList<User>  newUserList = userModel.getAllStudentFromTeacher (new User("Jeppe", 1 , 1));
             //User editedUser = userModel.editUser(new User("John",  "",  1,  1,  0) ,"Kent" , "Test" , 1516531);
             // userModel.deleteUser(new User("John",  "",  2,  1,  0));
@@ -42,8 +58,8 @@ public class MainWindowController implements Initializable {
             // System.out.println(editedUser);
             // userModel.getAllUsers(); 
             //userModel.changeAttendence(new User("John", "", 2, 1, 0), true);
-           // System.out.println(userModel.selectIndividualStatistics (new User("John", "", 2, 1, 0)));
-           // System.out.println(userModel.getGlobalAttendance(1));
+            System.out.println(userModel.selectIndividualStatistics (new User("John", "", 2, 1, 0)));
+            // System.out.println(userModel.getGlobalAttendance(1));
         } catch (modelException ex) {
             setUpAlert(ex.getMessage());
         }
@@ -56,4 +72,16 @@ public class MainWindowController implements Initializable {
         alert.setContentText(text);
         alert.showAndWait();
     }
+
+    @FXML
+    private void changeClass(MouseEvent event) throws modelException {
+        StudentView.getItems().clear();
+                     ObservableList<User>  newUserList = userModel.getAllStudentFromClass (        CourseView.getSelectionModel().getSelectedIndex()+1);
+             for (User us : newUserList) {
+                StudentView.getItems().add(us.getName());
+            }
+    }
+
+
+
 }
