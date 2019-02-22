@@ -8,11 +8,15 @@ package attendenceproject.gui.controller;
 import attendenceproject.be.User;
 import attendenceproject.gui.exceptions.modelException;
 import attendenceproject.gui.model.UserModel;
+import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTreeView;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -24,8 +28,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -34,13 +48,19 @@ import javafx.stage.Stage;
  */
 public class HubController implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
     private UserModel userModel;
     AnchorPane otherPane = null;
+    AnchorPane otherrPane = null;
     @FXML
     private AnchorPane innerPane;
+    @FXML
+    private TableView<User> currentStudentList;
+    @FXML
+    private TableColumn<?, ?> pictureColumn;
+    @FXML
+    private TableColumn<User, String> nameColumn;
+    @FXML
+    private JFXListView<Label> currentClassList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -56,49 +76,65 @@ public class HubController implements Initializable {
     }
 
     @FXML
-    private void switchToCurrentAttending(ActionEvent event) {
-        displayLoading(1);
-    }
-
-    private void displayLoading(int loadWhat) {
+    private void switchToCurrentAttendingStudents(ActionEvent event) {
         try {
-            otherPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/cardLoading.fxml"));
-            innerPane.getChildren().add(otherPane);
+            otherrPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/currentStudent.fxml"));
+            innerPane.getChildren().add(otherrPane);
         } catch (IOException ex) {
             setUpAlert(ex.getMessage());
         }
-
-        Task<ObservableList<User>> loadData = new Task<ObservableList<User>>() {
-            @Override
-            public ObservableList<User> call() throws modelException {
-                if (loadWhat == 1) {
-                    return userModel.getCurrentClassAttendingStudents(1);
-                }else if (loadWhat == 2){
-                    return null ;//userModel.getAllStudentFromTeacher(teacher);
-                }else{
-                   return null;
-                }
-            }
-        };
-        loadData.setOnSucceeded(e -> {
-            innerPane.getChildren().remove(otherPane);
-        });
-        loadData.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent arg0) {
-                setUpAlert(loadData.getException().getMessage());
-                innerPane.getChildren().remove(otherPane);
-            }
-        });
-        new Thread(loadData).start();
-    }
-
-    @FXML
-    private void switchToAllStudents(ActionEvent event) {
     }
 
     @FXML
     private void switchToStatistics(ActionEvent event) {
+        try {
+            otherrPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/currentStudent.fxml"));
+            innerPane.getChildren().add(otherrPane);
+        } catch (IOException ex) {
+            setUpAlert(ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void switchToStudents(ActionEvent event) {
+        try {
+            otherrPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/allStudents.fxml"));
+            innerPane.getChildren().add(otherrPane);
+        } catch (IOException ex) {
+            setUpAlert(ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void showAllCurrentStudents(MouseEvent event) throws modelException {
+        currentStudentList.getItems().addAll(userModel.getCurrentClassAttendingStudents(currentClassList.getSelectionModel().getSelectedIndex() + 1));
+    }
+
+    @FXML
+    private void loadClasses(ActionEvent event) {
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        pictureColumn.setCellValueFactory(new PropertyValueFactory<>("url"));
+        currentClassList.getItems().add(new Label("Class 1"));
+        currentClassList.getItems().add(new Label("Class 2"));
+        currentClassList.getItems().add(new Label("Class 3"));
+    }
+
+    @FXML
+    private void loadIndividualStudent(MouseEvent event) throws IOException {
+        Parent root1;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/attendenceproject/gui/view/individualStudent.fxml"));
+        root1 = (Parent) fxmlLoader.load();
+        // fxmlLoader.<>getController().setController(this); 
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root1, 800, 800));
+        stage.centerOnScreen();
+        stage.show();
+    }
+
+    @FXML
+    private void showAllStudents(MouseEvent event) throws modelException {
+        currentStudentList.getItems().addAll(userModel.getAllStudentFromClass(currentClassList.getSelectionModel().getSelectedIndex() + 1));
     }
 
 }
