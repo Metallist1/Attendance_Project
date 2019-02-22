@@ -88,7 +88,7 @@ public class HubController implements Initializable {
     @FXML
     private void switchToStatistics(ActionEvent event) {
         try {
-            otherrPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/currentStudent.fxml"));
+            otherrPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/statistics.fxml"));
             innerPane.getChildren().add(otherrPane);
         } catch (IOException ex) {
             setUpAlert(ex.getMessage());
@@ -107,6 +107,7 @@ public class HubController implements Initializable {
 
     @FXML
     private void showAllCurrentStudents(MouseEvent event) throws modelException {
+        currentStudentList.getItems().clear();
         currentStudentList.getItems().addAll(userModel.getCurrentClassAttendingStudents(currentClassList.getSelectionModel().getSelectedIndex() + 1));
     }
 
@@ -122,9 +123,9 @@ public class HubController implements Initializable {
     @FXML
     private void loadIndividualStudent(MouseEvent event) throws IOException {
         Parent root1;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/attendenceproject/gui/view/individualStudent.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/attendenceproject/gui/view/currentUser.fxml"));
         root1 = (Parent) fxmlLoader.load();
-        // fxmlLoader.<>getController().setController(this); 
+        fxmlLoader.<CurrentUserController>getController().setUser(currentStudentList.getSelectionModel().getSelectedItem()); 
 
         Stage stage = new Stage();
         stage.setScene(new Scene(root1, 800, 800));
@@ -134,6 +135,7 @@ public class HubController implements Initializable {
 
     @FXML
     private void showAllStudents(MouseEvent event) throws modelException {
+        currentStudentList.getItems().clear();
         currentStudentList.getItems().addAll(userModel.getAllStudentFromClass(currentClassList.getSelectionModel().getSelectedIndex() + 1));
     }
 
