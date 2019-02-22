@@ -6,7 +6,10 @@
 package attendenceproject.gui.controller;
 
 import attendenceproject.be.User;
+import attendenceproject.gui.exceptions.modelException;
+import attendenceproject.gui.model.UserModel;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -14,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -33,28 +38,37 @@ public class CurrentUserController implements Initializable {
     private TextField newCPR;
     @FXML
     private Label urlLabel;
-    
+
     private User currentUser;
+    private UserModel userModel;
+    @FXML
+    private ImageView imageView;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-
-    @FXML
-    private void editUser(ActionEvent event) {
+        userModel = UserModel.getInstance();
     }
 
     @FXML
-    private void deleteUser(ActionEvent event) {
+    private void editUser(ActionEvent event) throws modelException, MalformedURLException {
+        userModel.editUser(currentUser, newName.getText(), urlLabel.getText(), Integer.parseInt(newCPR.getText()));
+        nameLabel.setText(newName.getText());
+        if (urlLabel.getText() != "" && urlLabel.getText() != null) {
+            imageView.setImage(new Image(new File(urlLabel.getText()).toURI().toURL().toExternalForm()));
+        }
+    }
+
+    @FXML
+    private void deleteUser(ActionEvent event) throws modelException {
+        userModel.deleteUser(currentUser);
     }
 
     @FXML
     private void uploadURL(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
+        FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "Desktop")); //Sets the directory to the desktop
         fileChooser.setTitle("Select Picture");
         fileChooser.getExtensionFilters().addAll(
@@ -66,12 +80,14 @@ public class CurrentUserController implements Initializable {
         }
     }
 
-    public void setUser(User selectedUser) {
+    public void setUser(User selectedUser) throws MalformedURLException {
         currentUser = selectedUser;
         nameLabel.setText(currentUser.getName());
         urlLabel.setText(currentUser.getUrl());
-        
-        
+        if (currentUser.getUrl() != "" && currentUser.getUrl() != null) {
+            imageView.setImage(new Image(new File(currentUser.getUrl()).toURI().toURL().toExternalForm()));
+        }
+
     }
-    
+
 }

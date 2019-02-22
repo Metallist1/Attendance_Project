@@ -113,6 +113,7 @@ public class HubController implements Initializable {
 
     @FXML
     private void loadClasses(ActionEvent event) {
+        currentClassList.getItems().clear();
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         pictureColumn.setCellValueFactory(new PropertyValueFactory<>("url"));
         currentClassList.getItems().add(new Label("Class 1"));
