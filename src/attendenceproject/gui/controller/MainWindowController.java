@@ -133,6 +133,7 @@ public class MainWindowController implements Initializable {
                     Logger.getLogger(MainWindowController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 Stage stage = new Stage();
+                fxmlLoader.<HubController>getController().setTeacher(loadData.getValue());
                 stage.setScene(new Scene(root1, 800, 800));
                 stage.centerOnScreen();
                 stage.show();

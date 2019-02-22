@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import attendenceproject.dal.exceptions.daoException;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -33,7 +34,7 @@ public class UserDAO {
         User logedInUser = null;
         try (Connection con = ds.getConnection()) {
             String query = ""
-                    + "SELECT Teacher.name as tName , Teacher.teacherID as tID , Student.name as sName , Student.photo as sPhoto , Student.studentID as sID , allUser.isTeacher as isTeacher , Is_Learning.studentID as sClass FROM allUser "
+                    + "SELECT Teacher.name as tName , Teacher.teacherID as tID , Student.name as sName , Student.photo as sPhoto , Student.studentID as sID , allUser.isTeacher as isTeacher , Is_Learning.classID as sClass FROM allUser "
                     + "INNER JOIN Teacher "
                     + "ON allUser.personID = Teacher.teacherID "
                     + "INNER JOIN Student "
@@ -64,7 +65,7 @@ public class UserDAO {
 
     public User getSingleStudentInfo(int id) throws daoException {
         try (Connection con = ds.getConnection()) {
-            String query = "SELECT Student.name as sName , Student.photo as sPhoto , Student.studentID as sID , Is_Learning.studentID as sClass FROM Student "
+            String query = "SELECT Student.name as sName , Student.photo as sPhoto , Student.studentID as sID , Is_Learning.classID as sClass FROM Student "
                     + "INNER JOIN Is_Learning "
                     + "ON Student.studentID = Is_Learning.studentID "
                     + "WHERE Student.studentID = ? ";
@@ -185,6 +186,32 @@ public class UserDAO {
             preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, user.getID());
             preparedStmt.execute();
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot execute query");
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
+        }
+    }
+
+    public ObservableList<String> getTeachersClasses(User teacher) throws daoException {
+        ObservableList<String> allClasses = null;
+        try (Connection con = ds.getConnection()) {
+            String query = "SELECT Class.className as cName FROM Class "
+                    + "INNER JOIN Is_Learning "
+                    + "ON Teacher.teacherID = Is_Teaching.teacherID "
+                    + "INNER JOIN Class "
+                    + "ON Is_Teaching.teacherID = Class.id "
+                    + "WHERE Teacher.teacherID = ? ";
+            PreparedStatement ps = con.prepareStatement(query);
+            System.out.println(teacher.getID());
+            ps.setInt(1, teacher.getID());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                allClasses.add(rs.getString("cName"));
+            }
+            return allClasses;
         } catch (SQLServerException ex) {
             System.out.println(ex);
             throw new daoException("Cannot execute query");

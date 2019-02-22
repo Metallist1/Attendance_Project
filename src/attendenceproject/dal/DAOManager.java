@@ -12,6 +12,7 @@ import java.util.List;
 import attendenceproject.dal.db.UserDAO;
 import attendenceproject.dal.exceptions.daoException;
 import java.util.Date;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -123,6 +124,15 @@ public class DAOManager implements DAOLogicFacade {
     public List<Date> getGlobalAttendance(int classID) throws daoException {
         try {
             return attendanceDAO.getGlobalAttendance(classID);
+        } catch (daoException ex) {
+            throw new daoException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public ObservableList<String> getTeachersClasses(User teacher) throws daoException {
+        try {
+            return userDAO.getTeachersClasses(teacher);
         } catch (daoException ex) {
             throw new daoException(ex.getMessage());
         }

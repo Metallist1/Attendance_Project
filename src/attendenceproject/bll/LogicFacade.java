@@ -38,4 +38,6 @@ public interface LogicFacade {
     public List<Date> selectIndividualStatistics(User user) throws bllException;
 
     public List<Date> getGlobalAttendance(int classID) throws bllException;
+
+    public ObservableList<String> getTeachersClasses(User teacher) throws bllException;
 }

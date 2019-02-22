@@ -9,6 +9,7 @@ import attendenceproject.be.User;
 import java.util.List;
 import attendenceproject.dal.exceptions.daoException;
 import java.util.Date;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -35,5 +36,7 @@ public interface DAOLogicFacade {
     public List<Date> selectIndividualStatistics(User user) throws daoException;
 
     public List<Date> getGlobalAttendance(int classID) throws daoException;
+
+    public ObservableList<String> getTeachersClasses(User teacher) throws daoException;
 
 }

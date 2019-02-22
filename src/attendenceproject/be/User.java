@@ -5,6 +5,8 @@
  */
 package attendenceproject.be;
 
+import javafx.scene.image.ImageView;
+
 /**
  *
  * @author nedas
@@ -16,7 +18,8 @@ public class User {
     private int ID;
     private int currentClass;
     private int isTeacher;
-
+    private ImageView image;
+    
     public int getID() {
         return ID;
     }

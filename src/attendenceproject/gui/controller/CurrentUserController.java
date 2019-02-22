@@ -12,6 +12,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -87,7 +89,20 @@ public class CurrentUserController implements Initializable {
         if (currentUser.getUrl() != "" && currentUser.getUrl() != null) {
             imageView.setImage(new Image(new File(currentUser.getUrl()).toURI().toURL().toExternalForm()));
         }
-
     }
 
+    @FXML
+    private void markAttendance(ActionEvent event) {
+        try {
+            userModel.changeAttendence(currentUser, true);
+        } catch (modelException ex) {
+            System.out.println(ex);
+            try {
+                userModel.changeAttendence(currentUser, false);
+            } catch (modelException ex1) {
+                            System.out.println(ex1);
+                Logger.getLogger(CurrentUserController.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+    }
 }

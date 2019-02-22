@@ -113,7 +113,7 @@ public class UserModel {
         return logiclayer.search(currentUsers, userToFind);
     }
 
-    public void changeAttendence(User user, boolean isAttending) throws modelException{
+    public void changeAttendence(User user, boolean isAttending) throws modelException {
         try {
             logiclayer.changeAttendence(user, isAttending);
         } catch (bllException ex) {
@@ -121,17 +121,26 @@ public class UserModel {
         }
     }
 
-    public List<Date> selectIndividualStatistics(User user) throws modelException{
+    public List<Date> selectIndividualStatistics(User user) throws modelException {
         try {
-           return logiclayer.selectIndividualStatistics(user);
+            return logiclayer.selectIndividualStatistics(user);
         } catch (bllException ex) {
             throw new modelException(ex.getMessage());
         }
     }
 
-    public List<Date> getGlobalAttendance(int classID) throws modelException{
+    public List<Date> getGlobalAttendance(int classID) throws modelException {
         try {
-           return logiclayer.getGlobalAttendance(classID);
+            return logiclayer.getGlobalAttendance(classID);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+    }
+
+    public ObservableList<String> getTeachersClasses(User teacher) throws modelException {
+        try {
+            System.out.println(teacher.getID());
+            return logiclayer.getTeachersClasses(teacher);
         } catch (bllException ex) {
             throw new modelException(ex.getMessage());
         }

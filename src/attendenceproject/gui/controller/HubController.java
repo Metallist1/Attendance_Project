@@ -49,6 +49,7 @@ import javafx.util.Callback;
 public class HubController implements Initializable {
 
     private UserModel userModel;
+    private  User teacher;
     AnchorPane otherPane = null;
     AnchorPane otherrPane = null;
     @FXML
@@ -98,8 +99,10 @@ public class HubController implements Initializable {
     @FXML
     private void switchToStudents(ActionEvent event) {
         try {
-            otherrPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/allStudents.fxml"));
+                        otherrPane = FXMLLoader.load(getClass().getResource("/attendenceproject/gui/view/allStudents.fxml"));
+          //  otherrPane.<HubController>getController().setTeacher(teacher);
             innerPane.getChildren().add(otherrPane);
+            System.out.println(teacher.getID());
         } catch (IOException ex) {
             setUpAlert(ex.getMessage());
         }
@@ -112,13 +115,21 @@ public class HubController implements Initializable {
     }
 
     @FXML
-    private void loadClasses(ActionEvent event) {
+    private void loadClasses(ActionEvent event) throws modelException {
         currentClassList.getItems().clear();
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         pictureColumn.setCellValueFactory(new PropertyValueFactory<>("url"));
         currentClassList.getItems().add(new Label("Class 1"));
-        currentClassList.getItems().add(new Label("Class 2"));
-        currentClassList.getItems().add(new Label("Class 3"));
+                currentClassList.getItems().add(new Label("Class 2"));
+                        currentClassList.getItems().add(new Label("Class 3"));
+                        
+        /*
+        System.out.println(teacher.getID());
+        ObservableList<String> allClasses = userModel.getTeachersClasses(teacher);
+        for (String allClasse : allClasses) {
+                    currentClassList.getItems().add(new Label(allClasse));
+        }
+*/
     }
 
     @FXML
@@ -126,7 +137,7 @@ public class HubController implements Initializable {
         Parent root1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/attendenceproject/gui/view/currentUser.fxml"));
         root1 = (Parent) fxmlLoader.load();
-        fxmlLoader.<CurrentUserController>getController().setUser(currentStudentList.getSelectionModel().getSelectedItem()); 
+        fxmlLoader.<CurrentUserController>getController().setUser(currentStudentList.getSelectionModel().getSelectedItem());
 
         Stage stage = new Stage();
         stage.setScene(new Scene(root1, 800, 800));
@@ -138,6 +149,11 @@ public class HubController implements Initializable {
     private void showAllStudents(MouseEvent event) throws modelException {
         currentStudentList.getItems().clear();
         currentStudentList.getItems().addAll(userModel.getAllStudentFromClass(currentClassList.getSelectionModel().getSelectedIndex() + 1));
+    }
+
+    public void setTeacher(User value) {
+        System.out.println(value.getID());
+        teacher = value;
     }
 
 }

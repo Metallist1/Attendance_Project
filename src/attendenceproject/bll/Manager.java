@@ -128,4 +128,13 @@ public class Manager implements LogicFacade {
             throw new bllException(ex.getMessage());
         }
     }
+
+    @Override
+    public ObservableList<String> getTeachersClasses(User teacher) throws bllException {
+                try {
+           return logiclayer.getTeachersClasses(teacher);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
+    }
 }

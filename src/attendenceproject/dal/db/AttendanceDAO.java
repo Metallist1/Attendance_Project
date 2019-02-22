@@ -38,7 +38,8 @@ public class AttendanceDAO {
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setInt(1, user.getID());
                 ps.setInt(2, user.getCurrentClass());
-                ps.executeUpdate();
+                ps.addBatch();
+                ps.executeBatch();
             } else {
                 java.sql.Date date = currentDate();
                 String query = "DELETE from Attendance WHERE studentID = ? AND classID = ? AND date = ? ";
