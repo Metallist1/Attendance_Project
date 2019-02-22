@@ -16,12 +16,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import attendenceproject.dal.exceptions.daoException;
-<<<<<<< HEAD
 import java.sql.BatchUpdateException;
 import java.sql.ResultSet;
 import java.sql.SQLIntegrityConstraintViolationException;
-=======
->>>>>>> e876aafb8dd6d38dd372ff831d8c67eb4fea1d3a
 
 /**
  *
@@ -311,21 +308,12 @@ public class UserDAO {
                 ps.addBatch();
                 ps.executeBatch();
             } catch (SQLException ex) {
-<<<<<<< HEAD
-            if (ex.getSQLState().startsWith("23")) {
-                throw new daoException("Attendance already marked");
-            } else {
-                throw new daoException("Cannot execute query");
-            }
-        }
-=======
                 if (ex.getSQLState().startsWith("23")) {
                     throw new daoException("Attendance already marked");
                 } else {
                     throw new daoException("Cannot execute query");
                 }
             }
->>>>>>> e876aafb8dd6d38dd372ff831d8c67eb4fea1d3a
         } else {
             try (Connection con = ds.getConnection()) {
                 String query = "DELETE from Attendance WHERE studentID = ? AND classID = ? AND date = ? ";
@@ -343,8 +331,6 @@ public class UserDAO {
             }
         }
     }
-<<<<<<< HEAD
-=======
 
     public List<Date> selectIndividualStatistics(User user) throws daoException {
         List<Date> allAttendedDates = new ArrayList<>();
@@ -390,5 +376,4 @@ public class UserDAO {
             throw new daoException("Cannot connect to server");
         }
     }
->>>>>>> e876aafb8dd6d38dd372ff831d8c67eb4fea1d3a
 }

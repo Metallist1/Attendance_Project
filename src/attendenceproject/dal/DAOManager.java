@@ -116,8 +116,6 @@ public class DAOManager implements DAOLogicFacade {
         }
     }
 
-<<<<<<< HEAD
-=======
     @Override
     public List<Date> selectIndividualStatistics(User user) throws daoException {
          try {
@@ -136,5 +134,4 @@ public class DAOManager implements DAOLogicFacade {
         }
     }
 
->>>>>>> e876aafb8dd6d38dd372ff831d8c67eb4fea1d3a
 }

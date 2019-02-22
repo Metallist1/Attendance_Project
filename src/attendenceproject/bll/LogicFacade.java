@@ -8,10 +8,7 @@ package attendenceproject.bll;
 import attendenceproject.be.User;
 import java.util.List;
 import attendenceproject.bll.exceptions.bllException;
-<<<<<<< HEAD
-=======
 import java.util.Date;
->>>>>>> e876aafb8dd6d38dd372ff831d8c67eb4fea1d3a
 import javafx.collections.ObservableList;
 
 /**
@@ -38,14 +35,9 @@ public interface LogicFacade {
 
     public ObservableList<User> search(ObservableList<User> currentUsers, String userToFind);
 
-<<<<<<< HEAD
-    public void changeAttendence(User user, boolean attending) throws bllException;;
-
-=======
     public void changeAttendence(User user, boolean attending) throws bllException;
 
     public List<Date> selectIndividualStatistics(User user) throws bllException;
 
     public List<Date> getGlobalAttendance(int classID) throws bllException;
->>>>>>> e876aafb8dd6d38dd372ff831d8c67eb4fea1d3a
 }
